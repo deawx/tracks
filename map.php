@@ -10,6 +10,10 @@ if (isset($_POST["tracks"])) {
 	$encMultiTracks = base64_encode(json_encode($multiTracks));
 	$tracksJS = "<script type=\"text/javascript\" src=\"mkmap.js.php?multiTracks=$encMultiTracks\"></script>";
 	$mapCanvas = '<div id="map_canvas"></div>';	
+} elseif (isset($_GET["tracks"])) {
+	$encMultiTracks = $_GET["tracks"];
+	$tracksJS = "<script type=\"text/javascript\" src=\"mkmap.js.php?multiTracks=$encMultiTracks\"></script>";
+	$mapCanvas = '<div id="map_canvas"></div>';
 } else {
 	header("Location: index.php");
 }
@@ -30,6 +34,7 @@ echo <<<CONTENT
 	</head>
 	<body onload="initialize()">
 		<div>[<a href="index.php">go back</a>]</div>
+		<div>[<a href="?tracks=$encMultiTracks">link</a>] to this map</div>
 		$mapCanvas
 	</body>
 </html>
