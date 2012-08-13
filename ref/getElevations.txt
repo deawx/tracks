@@ -1,0 +1,7 @@
+mysql \
+--batch \
+-e "select time, ele from geo.track_2f62323a730274bae57474d410f2bb95" \
+| awk '{print $1"."$2" "$3}' \
+| tail -n +2 \
+> ele.txt
+

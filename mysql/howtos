@@ -1,0 +1,2 @@
+# How to search for a checksum'ed table name for a gpx file
+select * from geometry_columns WHERE F_TABLE_NAME LIKE "%dac43193d782cf62a5a7a95703a1fed9";
