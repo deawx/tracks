@@ -116,6 +116,18 @@ HTML;
 
 $trackTags .= "</ul><input type=\"submit\" value=\"filter\"></form>";
 
+$uploadForm = "";
+if ($loggedIn) {
+	$uploadForm = <<< UPLOAD
+<hr>
+<h2>Upload a new gpx track</h2>
+<form name="importFile" enctype="multipart/form-data" action="importGPX.php" method="POST">
+<input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+	<input name="userfile" type="file" /><br>
+	<input type="submit" value="Send File" />
+</form>
+UPLOAD;
+}
 
 echo <<<CONTENT
 <!DOCTYPE html>
@@ -134,15 +146,8 @@ echo <<<CONTENT
 		$tracks
 		<hr>
 		<h2>Filter tracks by tags</h2>
-		
 		$trackTags
-		<hr>
-		<h2>Upload a new gpx track</h2>
-		<form name="importFile" enctype="multipart/form-data" action="importGPX.php" method="POST">
-			<input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-			<input name="userfile" type="file" /><br>
-			<input type="submit" value="Send File" />
-		</form>
+		$uploadForm
 	</body>
 </html>
 CONTENT;
