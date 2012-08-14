@@ -69,10 +69,11 @@ if (is_null($mysqlPassword)) {
 $analytics = "<script type=\"text/javascript\" src=\"/analytics.js\"></script>";
 $google_api_id = "AIzaSyDOW5DPTHvc5b8aO0zttUeo3IwVqOKVE0g";
 if (defined("CREATE_DB")) {
-	$db = new db($mysqlServer, $mysqlUser, $mysqlPassword);
+	$db = new db($mysqlServer, $mysqlUser, $mysqlPassword, null, true);
 } else {
-	$db = new db($mysqlServer, $mysqlUser, $mysqlPassword, $mysqlDatabase);
+	$db = new db($mysqlServer, $mysqlUser, $mysqlPassword, $mysqlDatabase, true);
 }
+$db->debug(true);
 
 function array_dump($array) {
 	echo "<pre>" . print_r($array, true) . "</pre>";

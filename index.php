@@ -44,16 +44,16 @@ if (isset($_POST["trackTags"])) {
 }
 
 if((count($_SESSION["trackFlagFilter"]) == 0)) {
-	$req = db_query("select t.id as trackID, t.trackName as trackName, t.trackDescr as trackDescr, UNIX_TIMESTAMP(t.trackDate) as trackDate, GROUP_CONCAT(DISTINCT tt.trackTag ORDER BY tt.trackTag SEPARATOR ', ') as tags  FROM gps.tracks t JOIN gps.trackTagsLink ttl ON ttl.tracksID = t.id JOIN gps.trackTags tt ON tt.id = ttl.trackTagID GROUP BY t.id ORDER BY trackDate");
+	$req = $db->query("select t.id as trackID, t.trackName as trackName, t.trackDescr as trackDescr, UNIX_TIMESTAMP(t.trackDate) as trackDate, GROUP_CONCAT(DISTINCT tt.trackTag ORDER BY tt.trackTag SEPARATOR ', ') as tags  FROM gps.tracks t JOIN gps.trackTagsLink ttl ON ttl.tracksID = t.id JOIN gps.trackTags tt ON tt.id = ttl.trackTagID GROUP BY t.id ORDER BY trackDate");
 } elseif ((count($_SESSION["trackFlagFilter"]) == 1)) {
 	$filters = implode (", ", $_SESSION["trackFlagFilter"]);
-	$req = db_query("select t.id as trackID, t.trackName as trackName, t.trackDescr as trackDescr, UNIX_TIMESTAMP(t.trackDate) as trackDate, GROUP_CONCAT(DISTINCT tt.trackTag ORDER BY tt.trackTag SEPARATOR ', ') as tags  FROM gps.tracks t JOIN gps.trackTagsLink ttl ON ttl.tracksID = t.id JOIN gps.trackTags tt ON tt.id = ttl.trackTagID WHERE tt.id = $filters GROUP BY t.id ORDER BY trackDate");
+	$req = $db->query("select t.id as trackID, t.trackName as trackName, t.trackDescr as trackDescr, UNIX_TIMESTAMP(t.trackDate) as trackDate, GROUP_CONCAT(DISTINCT tt.trackTag ORDER BY tt.trackTag SEPARATOR ', ') as tags  FROM gps.tracks t JOIN gps.trackTagsLink ttl ON ttl.tracksID = t.id JOIN gps.trackTags tt ON tt.id = ttl.trackTagID WHERE tt.id = $filters GROUP BY t.id ORDER BY trackDate");
 } elseif (count($_SESSION["trackFlagFilter"]) >= 2) {
 	$filters = implode (", ", $_SESSION["trackFlagFilter"]);
-	$req = db_query("select t.id as trackID, t.trackName as trackName, t.trackDescr as trackDescr, UNIX_TIMESTAMP(t.trackDate) as trackDate, GROUP_CONCAT(DISTINCT tt.trackTag ORDER BY tt.trackTag SEPARATOR ', ') as tags  FROM gps.tracks t JOIN gps.trackTagsLink ttl ON ttl.tracksID = t.id JOIN gps.trackTags tt ON tt.id = ttl.trackTagID WHERE tt.id IN ($filters) GROUP BY t.id HAVING COUNT(DISTINCT tt.id) = 2 ORDER BY trackDate");
+	$req = $db->query("select t.id as trackID, t.trackName as trackName, t.trackDescr as trackDescr, UNIX_TIMESTAMP(t.trackDate) as trackDate, GROUP_CONCAT(DISTINCT tt.trackTag ORDER BY tt.trackTag SEPARATOR ', ') as tags  FROM gps.tracks t JOIN gps.trackTagsLink ttl ON ttl.tracksID = t.id JOIN gps.trackTags tt ON tt.id = ttl.trackTagID WHERE tt.id IN ($filters) GROUP BY t.id HAVING COUNT(DISTINCT tt.id) = 2 ORDER BY trackDate");
 }
 
-if (mysql_num_rows($req) == 0) {
+if ($req["rows"] == 0) {
 	$tracks = "<h2>No matches...</h2>";
 } else {
 	$tracks = <<< TRACKS
@@ -67,7 +67,7 @@ if (mysql_num_rows($req) == 0) {
 			<th>Edit</th>
 		</tr>
 TRACKS;
-	while ($row = mysql_fetch_assoc($req)) {
+	foreach($req["rows"] as $row) {
 		$trackID = $row["trackID"];
 		$trackName = $row["trackName"];
 		$trackDate = date("c", $row["trackDate"]);
@@ -101,8 +101,8 @@ $trackTags = <<<HTML
 HTML;
 
 
-$req = db_query("SELECT id, trackTag FROM gps.trackTags");
-while ($row = mysql_fetch_assoc($req)) {
+$req = $db->query("SELECT id, trackTag FROM gps.trackTags");
+foreach($req["rows"] as $row) {
 	$trackTag = $row["trackTag"];
 	$id = $row["id"];
 	$checked = "";
