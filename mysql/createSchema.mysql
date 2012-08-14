@@ -21,9 +21,9 @@
 
 /*!40000 DROP DATABASE IF EXISTS `geo`*/;
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `geo` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `tracks` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `geo`;
+USE `tracks`;
 
 --
 -- Table structure for table `geometry_columns`
