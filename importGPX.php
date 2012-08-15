@@ -49,44 +49,17 @@ if (!is_uploaded_file($tmpFileName)) {
 	exit;
 }
 
-libxml_use_internal_errors(true);
-$gpx = new SimpleXMLElement(file_get_contents($tmpFileName));
-if (!$gpx) {
-	echo "Failed loading gpx<br><pre>";
-	foreach(libxml_get_errors() as $error) {
-		echo "\t", $error->message;
+$fileMD5 = md5_file($tmpFileName);
+$execStr = OGR2OGR . " -f \"MySQL\" MYSQL:\"" . MYSQL_DBASE . ",user=" . MYSQL_USER . ",password=" . MYSQL_PASSWORD . "\" -lco engine=MYISAM -nln TRACK_$fileMD5 -overwrite $tmpFileName";
+exec($execStr, $execOutput, $returnValue)
+if ($returnValue != 0) {
+	echo "Exec failed..." . Util->eol();
+	foreach ($execOutput as $line) {
+		echo $line . Util->eol();
 	}
-	echo "</pre>";
+	echo Util->eol() . "You may need to clean up..." . Util->eol();
 	exit;
 }
 
-$trackPt = array();
-$index = 0;
-
-$trackName = (string) $gpx->trk->name;
-$trackTime = strtotime($trackName);
-$numOfTracks = (int) $gpx->trk->number;
-
-$res = db_query(sprintf("INSERT INTO gps.tracks (trackName, trackDate) VALUES ('%s', FROM_UNIXTIME(%d))", mysql_real_escape_string($trackName), $trackTime));
-if (!$res) {
-	exit;
-}
-
-$trackID = mysql_insert_id();
-if ($trackID === false) {
-	echo "Error inserting track into database";
-	exit;
-}
-
-foreach ($gpx->trk->trkseg->trkpt as $key => $value) {
-	$trackTime = strtotime((string) $value->time);
-	$trackLat = (float) $value["lat"];
-	$trackLon = (float) $value["lon"];
-	$trackElevation = (float) $value->ele;
-	$res = db_query(sprintf("INSERT INTO gps.trackPoints (id_tracks, trackPointDate, elevation, latitude, longitude) VALUES (%d, FROM_UNIXTIME(%d), %f, %f, %f)", $trackID, $trackTime, $trackElevation, $trackLat, $trackLon));
-	if (!$res) {
-		exit;
-	}
-}
-header("Location: editTrack.php?trackID=$trackID");
+header("Location: editTrack.php?trackID=TRACK_$fileMD5");
 ?>

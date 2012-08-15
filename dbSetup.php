@@ -2,13 +2,13 @@
 define ("CREATE_DB", true);
 require_once ("lib.php");
 $db->debug(true);
-if (!$db->setDB($mysqlDatabase)) {
+if (!$db->setDB(MYSQL_DATABASE)) {
 	$db->query("create database tracks");
-	if (!$db->setDB($mysqlDatabase)) {
-		echo "Failed to create/connect to database ($mysqlDatabase) on server ($mysqlServer)";
+	if (!$db->setDB(MYSQL_DATABASE)) {
+		echo "Failed to create/connect to database (" . MYSQL_DBASE . ") on server (" . MYSQL_SERVER . ")";
 		exit;
 	} else {
-		echo "Created database ($mysqlDatabase) on server ($mysqlServer)";
+		echo "Created database (" . MYSQL_DBASE . ") on server (" . MYSQL_SERVER . ")";
 	}
 }
 $setup = array(
@@ -17,7 +17,7 @@ $setup = array(
 	"DROP TABLE IF EXISTS spatial_ref_sys",
 	"CREATE TABLE spatial_ref_sys (SRID int(11) NOT NULL, AUTH_NAME varchar(256) DEFAULT NULL, AUTH_SRID int(11) DEFAULT NULL, SRTEXT varchar(2048) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1",
 	"DROP TABLE IF EXISTS track_tables_info",
-	"CREATE TABLE track_tables_info (id int(11) NOT NULL AUTO_INCREMENT, tableName varchar(256) NOT NULL, createDate datetime NOT NULL, owner varchar(256) NOT NULL, userDescr varchar(256) DEFAULT NULL, userPhotoAlbumURL varchar(256) DEFAULT NULL, userHikeLogURL varchar(256) DEFAULT NULL, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=latin1",
+	"CREATE TABLE track_tables_info (id int(11) NOT NULL AUTO_INCREMENT, tableName varchar(256) NOT NULL, createDate datetime NOT NULL, hikeDate datetime, owner varchar(256) NOT NULL, userDescr varchar(256) DEFAULT NULL, userPhotoAlbumURL varchar(256) DEFAULT NULL, userHikeLogURL varchar(256) DEFAULT NULL, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=latin1",
 	"DROP TABLE IF EXISTS track_tags",
 	"CREATE TABLE track_tags (id int(11) NOT NULL AUTO_INCREMENT, trackTag varchar(45) NOT NULL, PRIMARY KEY (id), UNIQUE KEY id_UNIQUE (id)) ENGINE=MyISAM DEFAULT CHARSET=latin1",
 	"DROP TABLE IF EXISTS track_tags_link",

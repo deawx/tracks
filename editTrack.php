@@ -33,18 +33,18 @@ if (isset($_GET["trackID"])) {
 	}
 
 	
-	$req = db_query("SELECT * FROM gps.trackTags");
+	$req = db_query("SELECT * FROM track_tags");
 	$trackTags = array();
-	while ($row = mysql_fetch_assoc($req)) {
+	foreach($req["rows"] as $row) {
 		$trackTags[$row["id"]] = array("tag" => $row["trackTag"], "linked" => false);
 	}
 	
-	$req = db_query(sprintf("SELECT * FROM gps.trackTagsLink WHERE tracksID = %d", mysql_real_escape_string($trackID)));
-	while ($row = mysql_fetch_assoc($req)) {
+	$req = db_query(sprintf("SELECT * FROM track_tags_link WHERE tracksID = %d", mysql_real_escape_string($trackID)));
+	foreach($req["rows"] as $row) {
 		$trackTags[$row["trackTagID"]]["linked"] = true;
 	}
 
-	$req = db_query(sprintf("SELECT id as trackID, trackName, trackDescr, UNIX_TIMESTAMP(trackDate) as trackDate FROM gps.tracks WHERE id = %d", mysql_real_escape_string($trackID)));
+	$req = db_query(sprintf("SELECT id as trackID, trackName, trackDescr, UNIX_TIMESTAMP(trackDate) as trackDate FROM track_tables_info WHERE id = %d", mysql_real_escape_string($trackID)));
 	$row = mysql_fetch_assoc($req);
 	$trackID = $row["trackID"];
 	$trackName = $row["trackName"];

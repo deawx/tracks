@@ -1,5 +1,7 @@
 <?php
+require_once("Util.php");
 require_once("db.php");
+
 
 define ("FEET_PER_METER", 3.2808399);
 define ("PIC_FEED", "https://picasaweb.google.com/data/feed/base/user/104513162711957846602/albumid/5722183446880050193?alt=rss&kind=photo&hl=en_US");
@@ -22,23 +24,19 @@ if (!isset($iniOptions["mysql"])) {
 	exit;
 }
 
-$mysqlServer = null;
-$mysqlDatabase = null;
-$mysqlUser = null;
-$mysqlPasswd = null;
 foreach ($iniOptions["mysql"] as $option => $value) {
 	switch ($option) {
 		case "server":
-			$mysqlServer = $value;
+			define("MYSQL_SERVER", $value);
 			break;
 		case "database":
-			$mysqlDatabase = $value;
+			define("MYSQL_DBASE", $value);
 			break;
 		case "user":
-			$mysqlUser = $value;
+			define("MYSQL_USER", $value);
 			break;
 		case "password":
-			$mysqlPassword = $value;
+			define("MYSQL_PASSWORD", $value);
 			break;
 		default:
 			echo "Unknown key/value ($option/$value) pair specified in ini file (" . INI_FILE .").";
@@ -46,32 +44,48 @@ foreach ($iniOptions["mysql"] as $option => $value) {
 	}
 }
 
-if (is_null($mysqlServer)) {
+foreach ($iniOptions["gdal"] as $option => $value) {
+	switch ($option) {
+		case "ogr2ogr":
+			define ("OGR2OGR" , $value);
+			break;
+		default:
+			echo "Unknown key/value ($option/$value) pair specified in ini file (" . INI_FILE .").";
+			exit;
+	}
+}
+
+if (!defined("MYSQL_SERVER")) {
 	echo "mysql server is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
 
-if (is_null($mysqlDatabase)) {
+if (!defined("MYSQL_DBASE")) {
 	echo "mysql database is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
 
-if (is_null($mysqlUser)) {
+if (!defined("MYSQL_USER")) {
 	echo "mysql user is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
 
-if (is_null($mysqlPassword)) {
+if (!defined("MYSQL_PASSWORD")) {
 	echo "mysql password is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
+
+if (!defined("OGR2OGR")) {
+	echo "ogr2ogr path is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
 
 $analytics = "<script type=\"text/javascript\" src=\"/analytics.js\"></script>";
 $google_api_id = "AIzaSyDOW5DPTHvc5b8aO0zttUeo3IwVqOKVE0g";
 if (defined("CREATE_DB")) {
-	$db = new db($mysqlServer, $mysqlUser, $mysqlPassword, null, true);
+	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, null, true);
 } else {
-	$db = new db($mysqlServer, $mysqlUser, $mysqlPassword, $mysqlDatabase, true);
+	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DBASE, true);
 }
 $db->debug(true);
 

@@ -87,6 +87,7 @@ CREATE TABLE `track_tables_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tableName` varchar(256) NOT NULL,
   `createDate` datetime NOT NULL,
+  `hikeDate` datetime NOT NULL,
   `owner` varchar(256) NOT NULL,
   `userDescr` varchar(256) DEFAULT NULL,
   `userPhotoAlbumURL` varchar(256) DEFAULT NULL,

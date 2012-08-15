@@ -5,14 +5,7 @@ class db {
 	private $eol;
 
 	public function __construct($server, $user, $password, $dbase = null, $debug = false) {
-		switch (php_sapi_name()) {
-			case "cli": 
-				$this->eol = "\n";
-				break;
-			default:
-				$this->eol = "<br>";
-				break;
-		}
+		$this->eol = Util::eol();
 		if ($debug) {
 			$this->debug(true);
 		}
