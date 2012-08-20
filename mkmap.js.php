@@ -1,5 +1,6 @@
 <?php
 require_once("lib.php");
+
 $colorWheel = array(
 	"#FF0000", 
 	"#00FF00", 
@@ -20,15 +21,16 @@ if (isset($_GET["multiTracks"])) {
 		if ($color === false) {
 			$color = reset($colorWheel);
 		}
-		$req = db_query(sprintf("SELECT id as trackID, trackName, trackDescr, UNIX_TIMESTAMP(trackDate) as trackDate FROM gps.tracks tracks WHERE id = %d", $trackID));
-		$row = mysql_fetch_assoc($req);
-		$trackName = $row["trackName"];		
-		 
-		$req = db_query(sprintf("SELECT latitude, longitude, UNIX_TIMESTAMP(trackPointDate) as trackPointDate, elevation FROM gps.trackPoints WHERE id_tracks = %d ORDER BY trackPointDate", $trackID));
-		$midPointRow = floor(mysql_num_rows($req) / 2);
+		$req = $db->query(sprintf("SELECT id as trackID, trackName, userDescr, tableName, UNIX_TIMESTAMP(trackDate) as trackDate FROM track_tables_info WHERE id = %d", $trackID));
+		$row = $req["rows"][0];
+		$trackName = $row["trackName"];
+		$tableName = $row["tableName"];
+		//select time, Y(SHAPE) as lat, X(SHAPE) as lng, ele from track_2f62323a730274bae57474d410f2bb95
+		$req = $db->query("SELECT Y(SHAPE) AS latitude, X(SHAPE) AS longitude, UNIX_TIMESTAMP(time) AS trackPointDate, ele AS elevation FROM $tableName ORDER BY time");
+		$midPointRow = floor($req["rowCount"] / 2);
 		$i = 0;
-		$js .= "var flightPlanCoordinates$trackID = [";		
-		while ($row = mysql_fetch_assoc($req)) {
+		$js .= "var flightPlanCoordinates$trackID = [";
+		foreach($req["rows"] as $row) {
 			$js .= "new google.maps.LatLng({$row["latitude"]}, {$row["longitude"]}),";
 			if ($i == 0) {
 				$startLat = $row["latitude"];

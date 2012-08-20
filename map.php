@@ -18,6 +18,10 @@ if (isset($_POST["tracks"])) {
 	header("Location: index.php");
 }
 
+if ($db->debug()) {
+	$mapCanvas = "Database calls are in debug mode... this won't work!";
+}
+
 echo <<<CONTENT
 <!DOCTYPE html>
 <html>
@@ -39,5 +43,4 @@ echo <<<CONTENT
 	</body>
 </html>
 CONTENT;
-
 ?>

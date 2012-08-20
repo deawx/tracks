@@ -10,7 +10,7 @@ require_once("lib.php");
 
 if (isset($_GET["modify"])) {
 	if (isset($_POST["newTrackTag"]) && trim($_POST["newTrackTag"]) != "") {
-		$req = mysql_query(sprintf("INSERT INTO gps.trackTags (trackTag) VALUES ('%s')", mysql_real_escape_string($_POST["newTrackTag"])));
+		$req = $db->query(sprintf("INSERT INTO track_tags (trackTag) VALUES ('%s')", $db->escapeString($_POST["newTrackTag"])));
 		if (!$req) {
 			echo mysql_error();
 		}
@@ -18,14 +18,14 @@ if (isset($_GET["modify"])) {
 	
 	if (isset($_POST["delete"])) {
 		foreach ($_POST["delete"] as $trackID => $flag) {
-			$req = db_query(sprintf("DELETE FROM gps.trackTags WHERE id = %d", mysql_real_escape_string($trackID)));
+			$req = $db->query(sprintf("DELETE FROM track_tags WHERE id = %d", $db->escapeString($trackID)));
 		}
 	}
 	
 	if (isset($_POST["update"])) {
 		foreach ($_POST["update"] as $trackID => $newValue) {
 			if (trim($newValue) != "") {
-				$req = db_query(sprintf("UPDATE gps.trackTags SET trackTag = '%s' WHERE id = %d", mysql_real_escape_string($newValue), mysql_real_escape_string($trackID)));
+				$req = $db->query(sprintf("UPDATE track_tags SET trackTag = '%s' WHERE id = %d", $db->escapeString($newValue), $db->escapeString($trackID)));
 			}
 		}
 	}
@@ -35,11 +35,11 @@ if (isset($_GET["modify"])) {
 }
 
 
-$req = db_query("SELECT * FROM gps.trackTags");
+$req = $db->query("SELECT * FROM track_tags");
 
 $tracks = '<form action="?modify" method="post">';
 if ($req) {
-	while ($row = mysql_fetch_assoc($req)) {
+	foreach($req["rows"] as $row) {
 		$trackTypeID = $row["id"];
 		$trackTag = $row["trackTag"];
 		$tracks .= <<< HTML

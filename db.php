@@ -60,14 +60,31 @@ class db {
 		}
 		$this->_debug(" SUCCESS", true);
 		
+		$res = null;		
 		do {
-			$res[] = $this->_db->use_result()->fetch_assoc();
-		} while ($this->_db->next_result());
-		return array("rowCount" => count($res), "rows" => $res);
+			if ($result = $this->_db->store_result()) {
+				while ($row = $result->fetch_assoc()) {
+					$res[] = $row;
+				}
+				$result->free();
+			} 
+		} while ($this->_db->more_results() && $this->_db->next_result());
+		if (is_array($res)) {
+			return array("rowCount" => count($res), "rows" => $res);
+		}
+		return array("rowCount" => 0, "rows" => null);
 	}
 
 	public function setDB($dbase) {
 		return $this->_db->select_db($dbase);
+	}
+	
+	public function escapeString($str) {
+		return $this->_db->real_escape_string($str);
+	}
+	
+	public function __destruct() {
+		$this->_db->close();
 	}
 }
 ?>

@@ -83,11 +83,11 @@ if (!defined("OGR2OGR")) {
 $analytics = "<script type=\"text/javascript\" src=\"/analytics.js\"></script>";
 $google_api_id = "AIzaSyDOW5DPTHvc5b8aO0zttUeo3IwVqOKVE0g";
 if (defined("CREATE_DB")) {
-	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, null, true);
+	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, null);
 } else {
-	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DBASE, true);
+	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DBASE);
 }
-$db->debug(true);
+$db->debug(false);
 
 function array_dump($array) {
 	echo "<pre>" . print_r($array, true) . "</pre>";

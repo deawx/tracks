@@ -50,16 +50,22 @@ if (!is_uploaded_file($tmpFileName)) {
 }
 
 $fileMD5 = md5_file($tmpFileName);
-$execStr = OGR2OGR . " -f \"MySQL\" MYSQL:\"" . MYSQL_DBASE . ",user=" . MYSQL_USER . ",password=" . MYSQL_PASSWORD . "\" -lco engine=MYISAM -nln TRACK_$fileMD5 -overwrite $tmpFileName";
-exec($execStr, $execOutput, $returnValue)
+$execStr = OGR2OGR . " -f \"MySQL\" MYSQL:\"" . MYSQL_DBASE . ",user=" . MYSQL_USER . ",password=" . MYSQL_PASSWORD . "\" -lco engine=MYISAM -nln track_$fileMD5 -overwrite $tmpFileName";
+exec($execStr, $execOutput, $returnValue);
 if ($returnValue != 0) {
-	echo "Exec failed..." . Util->eol();
+	echo "Exec failed..." . Util::eol();
 	foreach ($execOutput as $line) {
-		echo $line . Util->eol();
+		echo $line . Util::eol();
 	}
-	echo Util->eol() . "You may need to clean up..." . Util->eol();
+	echo Util::eol() . "You may need to clean up..." . Util::eol();
 	exit;
 }
 
-header("Location: editTrack.php?trackID=TRACK_$fileMD5");
+$req = $db->query("SELECT OGR_FID, time FROM track_$fileMD5 ORDER BY OGR_FID limit 1");
+$timeStamp = $req["rows"][0]["time"];
+$db->query("INSERT INTO track_tables_info (tableName, trackDate) VALUES ('track_$fileMD5', '$timeStamp')");
+$req = $db->query("SELECT id FROM track_tables_info WHERE tableName = 'track_$fileMD5'");
+$trackID = $req["rows"][0]["id"];
+
+header("Location: editTrack.php?trackID=$trackID");
 ?>

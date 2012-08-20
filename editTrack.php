@@ -19,39 +19,39 @@ if (isset($_GET["trackID"])) {
 	}
 	
 	if (isset($_POST["update"])) {
-		$newTrackName = mysql_real_escape_string($_POST["trackName"]);
-		$newTrackDescr = mysql_real_escape_string($_POST["trackDescr"]);
-		$req = db_query(sprintf("UPDATE gps.tracks SET trackName = '%s', trackDescr = '%s' WHERE id = %d", $newTrackName, $newTrackDescr, mysql_real_escape_string($trackID)));
-		$req = db_query(sprintf("DELETE FROM gps.trackTagsLink WHERE tracksID = %d", mysql_real_escape_string($trackID)));
+		$newTrackName = $db->escapeString($_POST["trackName"]);
+		$newTrackDescr = $db->escapeString($_POST["trackDescr"]);
+		$req = $db->query(sprintf("UPDATE track_tables_info SET trackName = '%s', userDescr = '%s' WHERE id = %d", $newTrackName, $newTrackDescr, $db->escapeString($trackID)));
+		$req = $db->query(sprintf("DELETE FROM track_tags_link WHERE tracksID = %d", $db->escapeString($trackID)));
 		if (isset($_POST["tag"])) {
 			foreach ($_POST["tag"] as $tagID => $flag) {
-				$req = db_query(sprintf("INSERT INTO gps.trackTagsLink (trackTagID, tracksID) VALUES (%d, %d)", mysql_real_escape_string($tagID), mysql_real_escape_string($trackID)));
+				$req = $db->query(sprintf("INSERT INTO track_tags_link (trackTagID, tracksID) VALUES (%d, %d)", $db->escapeString($tagID), $db->escapeString($trackID)));
 			}
 		}
 		
 		echo "Track data updated...<br>";
 	}
-
 	
-	$req = db_query("SELECT * FROM track_tags");
+	$req = $db->query("SELECT * FROM track_tags");
 	$trackTags = array();
 	foreach($req["rows"] as $row) {
 		$trackTags[$row["id"]] = array("tag" => $row["trackTag"], "linked" => false);
 	}
 	
-	$req = db_query(sprintf("SELECT * FROM track_tags_link WHERE tracksID = %d", mysql_real_escape_string($trackID)));
+	$req = $db->query(sprintf("SELECT * FROM track_tags_link WHERE tracksID = %d", $db->escapeString($trackID)));
 	foreach($req["rows"] as $row) {
 		$trackTags[$row["trackTagID"]]["linked"] = true;
 	}
 
-	$req = db_query(sprintf("SELECT id as trackID, trackName, trackDescr, UNIX_TIMESTAMP(trackDate) as trackDate FROM track_tables_info WHERE id = %d", mysql_real_escape_string($trackID)));
-	$row = mysql_fetch_assoc($req);
-	$trackID = $row["trackID"];
+	$req = $db->query(sprintf("SELECT id as trackID, trackName, userDescr, tableName, UNIX_TIMESTAMP(trackDate) as trackDate FROM track_tables_info WHERE id = %d", $db->escapeString($trackID)));
+	$row = $req["rows"][0];
+	$rowID = $row["trackID"];
 	$trackName = $row["trackName"];
 	$trackDate = date("c", $row["trackDate"]);
-	$trackDescr = $row["trackDescr"];
-	$req = db_query(sprintf("SELECT COUNT(id) as count FROM gps.trackPoints WHERE id_tracks = %d", mysql_real_escape_string($trackID)));
-	$row = mysql_fetch_assoc($req);
+	$trackDescr = $row["userDescr"];
+	$tableName = $row["tableName"];
+	$req = $db->query(sprintf("SELECT COUNT(OGR_FID) as count FROM $tableName"));
+	$row = $req["rows"][0];
 	$count = $row["count"];
 
 	$trackTagChecks = "<ul>";
