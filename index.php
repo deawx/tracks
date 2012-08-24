@@ -64,6 +64,7 @@ if ($req["rows"] == 0) {
 			<th>Date</th>
 			<th>Name</th>
 			<th>Tags</th>
+			<th>Elevation</th>
 			<th>Edit</th>
 		</tr>
 TRACKS;
@@ -74,6 +75,7 @@ TRACKS;
 		$trackDescr = $row["trackDescr"];
 		$tags = $row["tags"];
 		$edit = "";
+		$elevation = "[<a href=\"elevation.php?trackID=$trackID\">ele</a>]";
 		if ($loggedIn) {
 			$edit = "[<a href=\"editTrack.php?trackID=$trackID\">edit</a>]";
 		} 
@@ -83,6 +85,7 @@ TRACKS;
 			<td>$trackDate</td>
 			<td>$trackName</a></td>
 			<td>$tags</td>
+			<td>$elevation</td>
 			<td>$edit</td>
 		</tr>
 TRACKS;

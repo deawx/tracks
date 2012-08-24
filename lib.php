@@ -44,6 +44,17 @@ foreach ($iniOptions["mysql"] as $option => $value) {
 	}
 }
 
+foreach ($iniOptions["google"] as $option => $value) {
+	switch ($option) {
+		case "apiID":
+			define ("GOOGLE_API_ID", $value);
+			break;
+		default:
+			echo "Unknown key/value ($option/$value) pair specified in ini file (" . INI_FILE .").";
+			exit;
+	}
+}
+
 foreach ($iniOptions["gdal"] as $option => $value) {
 	switch ($option) {
 		case "ogr2ogr":
@@ -80,8 +91,14 @@ if (!defined("OGR2OGR")) {
 	exit;
 }
 
+if (!defined("GOOGLE_API_ID")) {
+	echo "Google API ID is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
+			
+
 $analytics = "<script type=\"text/javascript\" src=\"/analytics.js\"></script>";
-$google_api_id = "AIzaSyDOW5DPTHvc5b8aO0zttUeo3IwVqOKVE0g";
+
 if (defined("CREATE_DB")) {
 	$db = new db(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, null);
 } else {

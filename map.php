@@ -21,6 +21,7 @@ if (isset($_POST["tracks"])) {
 if ($db->debug()) {
 	$mapCanvas = "Database calls are in debug mode... this won't work!";
 }
+$google_api_id = GOOGLE_API_ID;
 
 echo <<<CONTENT
 <!DOCTYPE html>
