@@ -3,7 +3,12 @@ require_once("lib.php");
 
 if (isset($_GET["trackID"])) {
 	$trackID = $_GET["trackID"];
-	$elevationProfile = '<img src="eleProfile.php?trackID=$trackID">';
+	$elevationProfile = "<img src=\"eleProfile.php?trackID=$trackID\">";
+	$req = $db->query("SELECT trackName, trackDate, userDescr FROM track_tables_info WHERE ID = $trackID");
+	$trackName = $req["rows"][0]["trackName"]; 
+	$trackDate = $req["rows"][0]["trackDate"]; 
+	$trackDescr = $req["rows"][0]["userDescr"]; 
+	$info = "Track: $trackName<br>Date: $trackDate<br>Descr: $trackDescr<br>";
 } else {
 	header("Location: index.php");
 }
@@ -18,6 +23,8 @@ echo <<<CONTENT
 		$analytics
 	</head>
 	<body>
+		$info
+		<div>[<a href="index.php">go back</a>]</div>
 		<div>$elevationProfile</div>
 	</body>
 </html>

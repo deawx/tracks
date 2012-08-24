@@ -66,6 +66,20 @@ foreach ($iniOptions["gdal"] as $option => $value) {
 	}
 }
 
+foreach ($iniOptions["gnuplot"] as $option => $value) {
+	switch ($option) {
+		case "gnuplot":
+			define ("GNUPLOT" , $value);
+			break;
+		case "elevationScript":
+			define ("GNUPLOT_ELEVATION_SCRIPT", $value);
+			break;
+		default:
+			echo "Unknown key/value ($option/$value) pair specified in ini file (" . INI_FILE .").";
+			exit;
+	}
+}
+
 if (!defined("MYSQL_SERVER")) {
 	echo "mysql server is not defined in the ini file (" . INI_FILE . ").";
 	exit;
@@ -95,7 +109,16 @@ if (!defined("GOOGLE_API_ID")) {
 	echo "Google API ID is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
-			
+
+if (!defined("GNUPLOT")) {
+	echo "gnuplot path is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
+
+if (!defined("GNUPLOT_ELEVATION_SCRIPT")) {
+	echo "gnuplot elevation script path is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
 
 $analytics = "<script type=\"text/javascript\" src=\"/analytics.js\"></script>";
 
