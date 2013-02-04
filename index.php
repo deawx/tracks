@@ -10,8 +10,11 @@ if (isset($_GET["logout"])) {
 	header("Location: .");
 }
 
-if (isset($_POST["secret"]) && $_POST["secret"] == SECRET) {
-	$_SESSION["login"] = true;
+if (isset($_POST["secret"])) {
+	$g = new GoogleAuthenticator();
+	if ($g->verifyCode(TOTP_SECRET, $_POST["secret"])) {
+		$_SESSION["login"] = true;
+	}
 }
 
 $editTrackTags = "";

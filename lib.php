@@ -1,12 +1,12 @@
 <?php
 require_once("Util.php");
 require_once("db.php");
+require_once("GoogleAuthenticator.php");
 
 
 define ("FEET_PER_METER", 3.2808399);
 define ("PIC_FEED", "https://picasaweb.google.com/data/feed/base/user/104513162711957846602/albumid/5722183446880050193?alt=rss&kind=photo&hl=en_US");
-define ("SECRET", "p1ss0ff");
-define ("INI_FILE", "/var/www/tracks.ini");
+define ("INI_FILE", "/mnt/vol1/www/configs/tracks.ini");
 
 if (!file_exists(INI_FILE)) {
 	echo "INI file (" . INI_FILE . ") does not exist!";
@@ -80,6 +80,17 @@ foreach ($iniOptions["gnuplot"] as $option => $value) {
 	}
 }
 
+foreach ($iniOptions["totp"] as $option => $value) {
+	switch ($option) {
+		case "key":
+			define ("TOTP_SECRET", $value);
+			break;
+		default:
+			echo "Unknown key/value ($option/$value) pair specified in ini file (" . INI_FILE .").";
+			exit;
+	}
+}
+
 if (!defined("MYSQL_SERVER")) {
 	echo "mysql server is not defined in the ini file (" . INI_FILE . ").";
 	exit;
@@ -117,6 +128,11 @@ if (!defined("GNUPLOT")) {
 
 if (!defined("GNUPLOT_ELEVATION_SCRIPT")) {
 	echo "gnuplot elevation script path is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
+
+if (!defined("TOTP_SECRET")) {
+	echo "TOTP key is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
 
