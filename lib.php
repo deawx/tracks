@@ -91,6 +91,20 @@ foreach ($iniOptions["totp"] as $option => $value) {
 	}
 }
 
+foreach ($iniOptions["mytopo"] as $option => $value) {
+	switch ($option) {
+		case "partnerid":
+			define ("MYTOPO_PARTNER_ID", $value);
+			break;
+		case "secretkey":
+			define ("MYTOPO_SECRET_KEY", $value);
+			break;
+		default:
+			echo "Unknown key/value ($option/$value) pair specified in ini file (" . INI_FILE .").";
+			exit;
+	}
+}
+
 if (!defined("MYSQL_SERVER")) {
 	echo "mysql server is not defined in the ini file (" . INI_FILE . ").";
 	exit;
@@ -133,6 +147,16 @@ if (!defined("GNUPLOT_ELEVATION_SCRIPT")) {
 
 if (!defined("TOTP_SECRET")) {
 	echo "TOTP key is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
+
+if (!defined("MYTOPO_PARTNER_ID")) {
+	echo "MyTopo Partner ID is not defined in the ini file (" . INI_FILE . ").";
+	exit;
+}
+
+if (!defined("MYTOPO_SECRET_KEY")) {
+	echo "MyTopo Secret Key  is not defined in the ini file (" . INI_FILE . ").";
 	exit;
 }
 

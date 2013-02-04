@@ -1,6 +1,6 @@
 <?php
-$mytopo_partnerID = 12389;
-$mytopo_secretKey = "cc9839a0-be60-4b9a-8e15-2d53d2de4567";
+$mytopo_partnerID = MYTOPO_PARTNER_ID;
+$mytopo_secretKey = MYTOPO_SECRET_KEY;
 $mytopo_clientIP;
 
 if ( isset($_SERVER["REMOTE_ADDR"]) )    { 

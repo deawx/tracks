@@ -25,7 +25,6 @@ if (isset($_GET["multiTracks"])) {
 		$row = $req["rows"][0];
 		$trackName = $row["trackName"];
 		$tableName = $row["tableName"];
-		//select time, Y(SHAPE) as lat, X(SHAPE) as lng, ele from track_2f62323a730274bae57474d410f2bb95
 		$req = $db->query("SELECT Y(SHAPE) AS latitude, X(SHAPE) AS longitude, UNIX_TIMESTAMP(time) AS trackPointDate, ele AS elevation FROM $tableName ORDER BY time");
 		$midPointRow = floor($req["rowCount"] / 2);
 		$i = 0;
