@@ -22,4 +22,6 @@ GNUPlot is used to generate elevation plots, on the fly. If you don't care about
 ### Tracks.ini
 Edit the ini file "tracks.ini"; set sane values.
 
-
+Setup
+-----
+Assuming the proper MySQL permissions are granted to allow the creation of a database, you should be able to browse to the index.php file; the script will detect le lack of a proper database and auto-setup. Log in, and import some gpx files.
